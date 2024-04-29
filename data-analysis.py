@@ -47,6 +47,10 @@ def pix_to_m(pixels):
 def lightspeed(x, w):
     return 4 * w * a * (f + b) / x
 
+# xequation
+def xequation(w):
+    return 4 * w * a * (f + b) / c
+
 # percent error
 def percent_error(actual_value, estimated_value):
     absolute_error = abs(actual_value - estimated_value)
@@ -135,19 +139,29 @@ lspeed = np.average(lspeeds[1:])
 #ae = abs(c - lspeed)
 pe = percent_error(c,lspeed)
 std = np.std(lspeeds, ddof=1)
+# for i in range(len(lspeeds)):
+#     err = calculate_sigma_c(freqs_rad[i+2], dxs_adjusted[i])
+#     plt.errorbar(dxs_adjusted[i]*1000, lspeeds[i], yerr=err, color='k')
+#     plt.scatter(dxs_adjusted[i]*1000, lspeeds[i],label='c'+str(i+1)+f'={lspeeds[i]:.2e}+-{err:.2e}m/s')
 for i in range(len(lspeeds)):
     err = calculate_sigma_c(freqs_rad[i+2], dxs_adjusted[i])
-    plt.errorbar(dxs_adjusted[i]*1000, lspeeds[i], yerr=err, color='k')
-    plt.scatter(dxs_adjusted[i]*1000, lspeeds[i],label='c'+str(i+1)+f'={lspeeds[i]:.2e}+-{err:.2e}m/s')
+    plt.errorbar(freqs_rad[i+2], dxs_adjusted[i]*1000, yerr=.5, color='k')
+    plt.scatter(freqs_rad[i+2], dxs_adjusted[i]*1000, label='c'+str(i+1)+f'={lspeeds[i]:.2e}+-{err:.2e}m/s')
 # plt.plot([dxs_adjusted[0], dxs_adjusted[len(dxs_adjusted)-1]],[c,c],linestyle='dotted',label='c='+f"{c:.2f}")
 # plt.plot([dxs_adjusted[0], dxs_adjusted[len(dxs_adjusted)-1]],[lspeed,lspeed],label='c_avg='+f"{lspeed:.2f}"+\
 #          f',pe={percent_error(c,lspeed)}%')
-plt.plot([dxs_adjusted[0]*1000, dxs_adjusted[len(dxs_adjusted)-1]*1000],[c,c],linestyle='dashed',label='c='+f"{c:.2e}m/s")
-plt.plot([dxs_adjusted[0]*1000, dxs_adjusted[len(dxs_adjusted)-1]*1000],[lspeed,lspeed],label='c_avg='+f"{lspeed:.2e}+-{std / np.sqrt(len(lspeeds)):.2e}m/s"+\
+# plt.plot([dxs_adjusted[0]*1000, dxs_adjusted[len(dxs_adjusted)-1]*1000],[c,c],linestyle='dashed',label='c='+f"{c:.2e}m/s")
+# plt.plot([dxs_adjusted[0]*1000, dxs_adjusted[len(dxs_adjusted)-1]*1000],[lspeed,lspeed],label='c_avg='+f"{lspeed:.2e}+-{std / np.sqrt(len(lspeeds)):.2e}m/s"+\
+#          f',pe={pe:.2f}%')
+plt.plot([freqs_rad[2], freqs_rad[len(freqs_rad)-1]],[xequation(freqs_rad[2])*1000,xequation(freqs_rad[len(freqs_rad)-1])*1000],linestyle='dashed',label='c='+f"{c:.2e}m/s")
+plt.plot([freqs_rad[2], freqs_rad[len(freqs_rad)-1]],[(4 * freqs_rad[2] * a * (f + b) / lspeed)*1000,(4 * freqs_rad[len(freqs_rad)-1] * a * (f + b) / lspeed)*1000],label='c_avg='+f"{lspeed:.2e}+-{std / np.sqrt(len(lspeeds)):.2e}m/s"+\
          f',pe={pe:.2f}%')
 plt.legend()
-plt.xlabel('x(mm)')
-plt.ylabel('v(m/s)')
-plt.title('calculated speed of light (c = 4wa(f+b)/x)')
+#plt.xlabel('x(mm)')
+plt.xlabel('w(rad/s)')
+#plt.ylabel('v(m/s)')
+plt.ylabel('x(mm)')
+#plt.title('calculated speed of light (c = 4wa(f+b)/x)')
+plt.title('calculated speed of light (x = 1/c * 4wa(f+b))')
 plt.grid()
 plt.show()
